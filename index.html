@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
   
   <title>👻 ハロウィン ARお菓子あつめ 🎃</title>
@@ -34,6 +33,8 @@
       </div>
     </div>
 
+    <div id="candy-container" class="candy-display-area interactive"></div>
+
     <div id="clear-message" class="clear-modal-wrapper interactive">
       <div class="clear-popup">
         <div class="popup-icon">🏆✨</div>
@@ -61,14 +62,9 @@
       type="pattern"
       url="./assets/pattern-obake.patt"
       id="obake-marker">
-
-      <a-sphere id="candy1" color="#ff7a00" position="-0.6 0.2 -0.5" scale="0.25 0.25 0.25" class="interactive" onclick="collectCandy('candy1')"></a-sphere>
-      <a-sphere id="candy2" color="#8a2be2" position="0.6 0.2 -0.5" scale="0.25 0.25 0.25" class="interactive" onclick="collectCandy('candy2')"></a-sphere>
-      <a-sphere id="candy3" color="#ffcc00" position="0 0.2 -1.1" scale="0.3 0.3 0.3" class="interactive" onclick="collectCandy('candy3')"></a-sphere>
-
       </a-marker>
 
-    <a-entity camera cursor="fuse: false; rayOrigin: mouse;"></a-entity>
+    <a-entity camera></a-entity>
   </a-scene>
 
   <script src="app.js"></script>
