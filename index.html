@@ -21,36 +21,42 @@
     <p class="text-sm text-purple-300 mt-2">魔法のカメラを起動しています...</p>
   </div>
 
-  <div class="absolute inset-0 flex flex-col justify-between items-center p-6 z-20 pointer-events-none">
-    <header class="header-banner transform -rotate-1 mt-4 pointer-events-auto">
-      <h1 class="text-white text-2xl md:text-3xl font-black tracking-wider text-stroke flex items-center gap-2">
-        <span>🎃</span> FIND THE CANDY! <span>🍬</span>
-      </h1>
-    </header>
+  <div class="ui-container">
+    
+    <div class="flex flex-col items-center w-full">
+      <header class="header-banner transform -rotate-1 interactive">
+        <h1 class="text-white text-xl md:text-2xl font-black tracking-wider text-stroke flex items-center justify-center gap-1">
+          <span>🎃</span> FIND THE CANDY! <span>🍬</span>
+        </h1>
+      </header>
 
-    <div id="guide-overlay" class="bg-[#1a0f2e]/80 border-2 border-[#ff7a00] text-white p-4 rounded-2xl text-center backdrop-blur-sm transition-opacity duration-500">
-      <p class="font-bold text-sm">👻 黒枠つきの「オバケのマーカー」を写してね！</p>
+      <div id="guide-overlay" class="guide-box transition-opacity duration-500">
+        <p class="font-bold">👻 黒枠つきの「オバケのマーカー」を写してね！</p>
+      </div>
     </div>
 
-    <div id="clear-message" class="hidden flex-col items-center justify-center clear-popup max-w-sm text-center transform scale-90 transition-all duration-500 pointer-events-auto">
-      <div class="popup-icon mb-4">🏆✨</div>
-      <h2 class="text-3xl font-black text-[#ff7a00] text-stroke mb-2">HAPPY HALLOWEEN!</h2>
-      <p class="text-[#8a2be2] font-bold text-lg mb-6">お菓子を全部あつめたよ！🎉</p>
-      <button onclick="resetGame()" class="btn-retry">
-        もう一回あそぶ！
-      </button>
+    <div id="clear-message" class="hidden clear-modal-wrapper interactive">
+      <div class="clear-popup">
+        <div class="popup-icon mb-2">🏆✨</div>
+        <h2 class="text-2xl font-black text-[#ff7a00] text-stroke mb-1">HAPPY HALLOWEEN!</h2>
+        <p class="text-[#8a2be2] font-bold text-base mb-4">お菓子を全部あつめたよ！🎉</p>
+        <button onclick="resetGame()" class="btn-retry">
+          もう一回あそぶ！
+        </button>
+      </div>
     </div>
 
-    <footer class="footer-banner mb-4 pointer-events-auto">
-      <p class="text-white text-lg font-bold text-stroke">
-        🍬 あつめたお菓子: <span id="score" class="text-[#ffcc00] text-2xl font-black">0</span> / 3 個
+    <footer class="footer-banner interactive">
+      <p class="text-white text-base font-bold text-stroke">
+        🍬 あつめたお菓子: <span id="score" class="text-[#ffcc00] text-xl font-black">0</span> / 3 個
       </p>
     </footer>
+
   </div>
 
   <a-scene
     vr-mode-ui="enabled: false;"
-    renderer="logarithmicDepthBuffer: true;"
+    renderer="logarithmicDepthBuffer: true; precision: medium;"
     embedded
     arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false;">
 
@@ -78,31 +84,25 @@
     let score = 0;
     const maxScore = 3;
 
-    // ARエンジンのセットアップが完了したらローディングを消す
     window.addEventListener('camera-init', () => {
       if (loadingScreen) loadingScreen.classList.add('hidden');
     });
 
-    // マーカーがカメラに入った時
     marker.addEventListener('markerFound', () => {
       guideOverlay.style.opacity = '0';
     });
 
-    // マーカーがカメラから外れた時
     marker.addEventListener('markerLost', () => {
       guideOverlay.style.opacity = '1';
     });
 
-    // スマートフォンで画面上のお菓子をタップして「あつめる」処理
     function collectCandy(candyId) {
       const candyElement = document.getElementById(candyId);
       if (candyElement && candyElement.getAttribute('visible') !== false) {
-        // お菓子を消す
         candyElement.setAttribute('visible', 'false');
         score++;
         scoreText.innerText = score;
 
-        // 全てあつめたらお祝い画面へ
         if (score === maxScore) {
           clearMessage.classList.remove('hidden');
           clearMessage.classList.add('flex');
@@ -110,7 +110,6 @@
       }
     }
 
-    // ゲームリセット
     function resetGame() {
       score = 0;
       scoreText.innerText = score;
@@ -118,7 +117,6 @@
       clearMessage.classList.remove('flex');
       guideOverlay.style.opacity = '1';
 
-      // お菓子をすべて再表示
       for (let i = 1; i <= maxScore; i++) {
         const candy = document.getElementById(`candy${i}`);
         if (candy) candy.setAttribute('visible', 'true');
