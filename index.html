@@ -13,6 +13,8 @@
   <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
 
   <link rel="stylesheet" href="style.css">
+
+  <script src="app.js" defer></script>
 </head>
 <body class="m-0 overflow-hidden select-none">
 
@@ -40,7 +42,7 @@
         <div class="popup-icon">🏆✨</div>
         <h2 class="popup-title text-stroke">HAPPY HALLOWEEN!</h2>
         <p class="popup-desc">お菓子をゲットしたよ！🎉</p>
-        <button onclick="resetGame()" class="btn-retry">もう一回あそぶ！</button>
+        <button id="btn-retry" class="btn-retry">もう一回あそぶ！</button>
       </div>
     </div>
 
@@ -58,12 +60,9 @@
     embedded
     arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false;">
 
-    <a-marker preset="hiro" id="obake-marker">
-      </a-marker>
-
+    <a-marker preset="hiro" id="obake-marker"></a-marker>
     <a-entity camera></a-entity>
-  </a-scene>
 
-  <script src="app.js"></script>
+  </a-scene>
 </body>
 </html>
