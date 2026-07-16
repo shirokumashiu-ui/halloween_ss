@@ -1,86 +1,265 @@
-// ==========================================
-// 【★デザイン差し替え用：お菓子イラストのパス★】
-// ==========================================
-const CANDY_IMAGE = './assets/candy_01.png';
-
-const scoreText = document.getElementById('score');
-const clearMessage = document.getElementById('clear-message');
-const guideOverlay = document.getElementById('guide-overlay');
-const loadingScreen = document.getElementById('loading');
-const marker = document.getElementById('obake-marker');
-const candyContainer = document.getElementById('candy-container');
-
-let score = 0;
-let candiesSpawned = false; // お菓子が既に出現したかどうかのフラグ
-
-// ARエンジンの起動準備ができたらローディング画面を非表示にする
-window.addEventListener('camera-init', () => {
-  if (loadingScreen) {
-    loadingScreen.style.transition = 'opacity 0.5s ease';
-    loadingScreen.style.opacity = '0';
-    setTimeout(() => {
-      loadingScreen.style.display = 'none';
-    }, 500);
-  }
-});
-
-// 👻 Hiroマーカーをカメラが読み取った瞬間の処理！
-marker.addEventListener('markerFound', () => {
-  guideOverlay.style.opacity = '0'; // ガイドを隠す
-  
-  // まだお菓子が出ていない場合のみ、自動回収シーケンスを開始
-  if (!candiesSpawned) {
-    candiesSpawned = true;
-    spawnAndAutoCollect();
-  }
-});
-
-// マーカーを見失った時
-marker.addEventListener('markerLost', () => {
-  if (!candiesSpawned) {
-    guideOverlay.style.opacity = '1';
-  }
-});
-
-// お菓子が自動で出て、自動で吸い込まれて消える演出
-function spawnAndAutoCollect() {
-  candyContainer.innerHTML = ''; // コンテナをリセット
-
-  // 1. お菓子画像を画面中央に生成
-  const candyImg = document.createElement('img');
-  candyImg.src = CANDY_IMAGE;
-  candyImg.className = 'candy-item';
-  candyContainer.appendChild(candyImg);
-
-  // 2. 1.2秒後にお菓子を自動回収（消去）する演出をタイマー予約
-  setTimeout(() => {
-    collectCandyAutomatically(candyImg);
-  }, 1200); // 1.2秒間ふわふわ浮かんだら消える（お好みの時間に変更可能）
+:root {
+  --color-dark: #110724;
+  --color-purple: #8a2be2;
+  --color-orange: #ff7a00;
+  --color-yellow: #ffcc00;
 }
 
-// 自動でお菓子を消してお祝い画面を出す処理
-function collectCandyAutomatically(candyElement) {
-  // 自動でシュッと吸い込まれるように小さく消えるアニメーション
-  candyElement.style.transition = 'all 0.5s cubic-bezier(0.6, -0.28, 0.735, 0.045)';
-  candyElement.style.transform = 'scale(0) translateY(100px)'; // 下のスコアに向かって吸い込まれる演出
-  candyElement.style.opacity = '0';
-
-  // 消去アニメーションが終わるタイミングでスコア加算とクリア画面
-  setTimeout(() => {
-    score = 1;
-    scoreText.innerText = score;
-
-    // ゲームクリア（1つあつめたらおしまい）
-    clearMessage.style.display = 'block';
-  }, 500);
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  position: fixed;
+  background-color: var(--color-dark);
+  font-family: 'Fredoka One', 'M PLUS Rounded 1c', sans-serif;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
-// ゲームリセット処理
-function resetGame() {
-  score = 0;
-  scoreText.innerText = score;
-  clearMessage.style.display = 'none';
-  guideOverlay.style.opacity = '1';
-  candyContainer.innerHTML = ''; // 画面のお菓子を全消去
-  candiesSpawned = false; // 再びマーカー検知で出現可能にする
+/* AR表示の固定 */
+a-scene {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100% !important;
+  height: 100% !important;
+  z-index: 1;
+}
+.a-canvas, video {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+}
+
+/* UIオーバーレイ */
+.ui-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  pointer-events: none; /* タップなしで自動処理するため基本は全面すり抜け */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 16px;
+  box-sizing: border-box;
+}
+
+.header-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.interactive {
+  pointer-events: auto; /* ボタン等のクリックを許可 */
+}
+
+.text-stroke {
+  color: #ffffff;
+  text-shadow: 
+    3px 3px 0px var(--color-dark),
+    -3px -3px 0px var(--color-dark),
+    3px -3px 0px var(--color-dark),
+    -3px 3px 0px var(--color-dark);
+}
+
+.header-banner {
+  background: var(--color-orange);
+  border: 4px solid var(--color-yellow);
+  padding: 12px 24px;
+  border-radius: 30px;
+  box-shadow: 0 6px 0px #b35100;
+  text-align: center;
+  width: 90%;
+  max-width: 340px;
+  margin-top: 10px;
+}
+
+.header-title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 900;
+}
+
+.guide-box {
+  background: rgba(26, 15, 46, 0.85);
+  border: 2px solid var(--color-orange);
+  color: #ffffff;
+  padding: 10px 16px;
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  margin-top: 12px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  width: 85%;
+  max-width: 300px;
+  transition: opacity 0.4s ease;
+}
+
+/* -------------------------------------------
+   お菓子が出現するエリアとアニメーション
+   ------------------------------------------- */
+.candy-display-area {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 250px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* お菓子のイラスト用（中央1点集中デカめ表示） */
+.candy-item {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  filter: drop-shadow(0px 8px 0px rgba(17, 7, 36, 0.3)) drop-shadow(0px 0px 15px rgba(255, 204, 0, 0.8));
+  animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) both, floaty 2.5s ease-in-out infinite alternate;
+}
+
+/* ポップに出現 */
+@keyframes popIn {
+  0% { transform: scale(0); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* ふわふわ浮かぶ */
+@keyframes floaty {
+  0% { transform: translateY(0px) rotate(0deg); }
+  100% { transform: translateY(-12px) rotate(3deg); }
+}
+
+/* フッター */
+.footer-banner {
+  background: var(--color-purple);
+  border: 4px solid var(--color-orange);
+  padding: 10px 24px;
+  border-radius: 24px;
+  box-shadow: 0 6px 0px #521591;
+  text-align: center;
+  margin-bottom: env(safe-area-inset-bottom, 16px);
+}
+
+.footer-text {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 900;
+}
+
+.score-number {
+  color: var(--color-yellow);
+  font-size: 1.5rem;
+}
+
+/* クリアポップアップ */
+.clear-modal-wrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 20;
+  width: 90%;
+  max-width: 320px;
+  display: none;
+}
+
+.clear-popup {
+  background-color: rgba(255, 255, 255, 0.98);
+  border: 8px solid var(--color-purple);
+  padding: 32px 20px;
+  border-radius: 40px;
+  box-shadow: 0 12px 0px #521591;
+  text-align: center;
+}
+
+.popup-icon {
+  font-size: 4rem;
+  animation: bounce 1.5s infinite;
+  margin-bottom: 10px;
+}
+
+.popup-title {
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: var(--color-orange);
+  margin: 0 0 8px 0;
+}
+
+.popup-desc {
+  font-size: 1rem;
+  font-weight: bold;
+  color: var(--color-purple);
+  margin: 0 0 20px 0;
+}
+
+.btn-retry {
+  background-color: var(--color-yellow);
+  border: 4px solid var(--color-dark);
+  color: var(--color-dark);
+  font-size: 1.1rem;
+  font-weight: 900;
+  padding: 12px 32px;
+  border-radius: 50px;
+  box-shadow: 0 5px 0px var(--color-dark);
+  cursor: pointer;
+  transition: all 0.1s ease;
+}
+
+.btn-retry:active {
+  transform: translateY(3px);
+  box-shadow: 0 2px 0px var(--color-dark);
+}
+
+/* ローディング */
+.loading-bg {
+  position: absolute;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  background: radial-gradient(circle, #2e1150 0%, var(--color-dark) 100%);
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #ffffff;
+}
+
+.magic-portal {
+  font-size: 4rem;
+  animation: spin 3s linear infinite;
+}
+
+.loading-text {
+  font-size: 1.5rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  margin: 15px 0 5px 0;
+}
+
+.loading-sub {
+  font-size: 0.8rem;
+  color: #a78bfa;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
 }
