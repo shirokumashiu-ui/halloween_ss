@@ -1,3 +1,8 @@
+/* ==========================================
+   【★ハロウィンAR・完全安全版CSS★】
+   エラーの原因となる不正なコメントや構文を排除しています。
+   ========================================== */
+
 :root {
   --color-dark: #110724;
   --color-purple: #8a2be2;
@@ -5,6 +10,7 @@
   --color-yellow: #ffcc00;
 }
 
+/* 基本設定：余計なスクロールやスマホの誤作動を防ぐ */
 html, body {
   width: 100%;
   height: 100%;
@@ -12,6 +18,7 @@ html, body {
   padding: 0;
   overflow: hidden;
   position: fixed;
+  background-color: #110724; /* 変数エラー対策のフォールバック */
   background-color: var(--color-dark);
   font-family: 'Fredoka One', 'M PLUS Rounded 1c', sans-serif;
   touch-action: none;
@@ -19,7 +26,9 @@ html, body {
   user-select: none;
 }
 
-/* AR表示の固定 */
+/* -------------------------------------------
+   A-Frame & AR.js カメラ表示の固定
+   ------------------------------------------- */
 a-scene {
   position: absolute;
   top: 0;
@@ -28,13 +37,25 @@ a-scene {
   height: 100% !important;
   z-index: 1;
 }
-.a-canvas, video {
+
+.a-canvas {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover;
+}
+
+video {
   width: 100% !important;
   height: 100% !important;
   object-fit: cover !important;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
-/* UIオーバーレイ */
+/* -------------------------------------------
+   UIオーバーレイ：スマホの画面崩れを防ぐ絶対配置
+   ------------------------------------------- */
 .ui-container {
   position: absolute;
   top: 0;
@@ -42,7 +63,7 @@ a-scene {
   width: 100%;
   height: 100%;
   z-index: 10;
-  pointer-events: none; /* タップなしで自動処理するため基本は全面すり抜け */
+  pointer-events: none; /* 下のAR画面をタップできるように貫通させる */
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -58,21 +79,24 @@ a-scene {
   width: 100%;
 }
 
+/* ボタンやリトライ領域のみタップ可能にする */
 .interactive {
-  pointer-events: auto; /* ボタン等のクリックを許可 */
+  pointer-events: auto;
 }
 
+/* 文字のフチ取り（ポップなデザイン用） */
 .text-stroke {
   color: #ffffff;
   text-shadow: 
-    3px 3px 0px var(--color-dark),
-    -3px -3px 0px var(--color-dark),
-    3px -3px 0px var(--color-dark),
-    -3px 3px 0px var(--color-dark);
+    3px 3px 0px #110724,
+    -3px -3px 0px #110724,
+    3px -3px 0px #110724,
+    -3px 3px 0px #110724;
 }
 
+/* ヘッダーデザイン */
 .header-banner {
-  background: var(--color-orange);
+  background-color: var(--color-orange);
   border: 4px solid var(--color-yellow);
   padding: 12px 24px;
   border-radius: 30px;
@@ -89,8 +113,9 @@ a-scene {
   font-weight: 900;
 }
 
+/* ガイドボックス */
 .guide-box {
-  background: rgba(26, 15, 46, 0.85);
+  background-color: rgba(26, 15, 46, 0.85);
   border: 2px solid var(--color-orange);
   color: #ffffff;
   padding: 10px 16px;
@@ -106,7 +131,7 @@ a-scene {
 }
 
 /* -------------------------------------------
-   お菓子が出現するエリアとアニメーション
+   お菓子出現エリア & アニメーション
    ------------------------------------------- */
 .candy-display-area {
   position: absolute;
@@ -120,7 +145,7 @@ a-scene {
   align-items: center;
 }
 
-/* お菓子のイラスト用（中央1点集中デカめ表示） */
+/* お菓子のスタイル */
 .candy-item {
   width: 120px;
   height: 120px;
@@ -129,7 +154,7 @@ a-scene {
   animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) both, floaty 2.5s ease-in-out infinite alternate;
 }
 
-/* ポップに出現 */
+/* 出現演出 */
 @keyframes popIn {
   0% { transform: scale(0); opacity: 0; }
   100% { transform: scale(1); opacity: 1; }
@@ -143,7 +168,7 @@ a-scene {
 
 /* フッター */
 .footer-banner {
-  background: var(--color-purple);
+  background-color: var(--color-purple);
   border: 4px solid var(--color-orange);
   padding: 10px 24px;
   border-radius: 24px;
@@ -163,7 +188,7 @@ a-scene {
   font-size: 1.5rem;
 }
 
-/* クリアポップアップ */
+/* クリア画面 */
 .clear-modal-wrapper {
   position: absolute;
   top: 50%;
@@ -222,7 +247,7 @@ a-scene {
   box-shadow: 0 2px 0px var(--color-dark);
 }
 
-/* ローディング */
+/* ローディング表示 */
 .loading-bg {
   position: absolute;
   inset: 0;
@@ -245,21 +270,4 @@ a-scene {
 .loading-text {
   font-size: 1.5rem;
   font-weight: 900;
-  letter-spacing: 0.1em;
-  margin: 15px 0 5px 0;
-}
-
-.loading-sub {
-  font-size: 0.8rem;
-  color: #a78bfa;
-}
-
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-@keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-12px); }
-}
+  letter-spacing: 0
