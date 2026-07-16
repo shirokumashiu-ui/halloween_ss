@@ -2,11 +2,13 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-  <title>👻 ハロウィン ARお菓子あつめゲーム 🎃</title>
+  
+  <title>👻 ハロウィン ARお菓子あつめ 🎃</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=M+PLUS+Rounded+1c:wght=700;900&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=M+PLUS+Rounded+1c:wght@900&display=swap" rel="stylesheet">
 
   <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
   <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
@@ -15,40 +17,35 @@
 </head>
 <body class="m-0 overflow-hidden select-none">
 
-  <div id="loading" class="absolute inset-0 loading-bg z-30 flex flex-col items-center justify-center text-white">
-    <div class="magic-portal mb-4">🔮</div>
-    <p class="text-2xl font-black tracking-widest text-[#ffcc00] text-stroke">HALLOWEEN AR</p>
-    <p class="text-sm text-purple-300 mt-2">魔法のカメラを起動しています...</p>
+  <div id="loading" class="loading-bg">
+    <div class="magic-portal">🔮</div>
+    <p class="loading-text text-stroke">HALLOWEEN AR</p>
+    <p class="loading-sub">魔法のカメラを起動しています...</p>
   </div>
 
   <div class="ui-container">
     
-    <div class="flex flex-col items-center w-full">
+    <div class="header-container">
       <header class="header-banner transform -rotate-1 interactive">
-        <h1 class="text-white text-xl md:text-2xl font-black tracking-wider text-stroke flex items-center justify-center gap-1">
-          <span>🎃</span> FIND THE CANDY! <span>🍬</span>
-        </h1>
+        <h1 class="header-title text-stroke">🎃 FIND THE CANDY! 🍬</h1>
       </header>
-
-      <div id="guide-overlay" class="guide-box transition-opacity duration-500">
-        <p class="font-bold">👻 黒枠つきの「オバケのマーカー」を写してね！</p>
+      <div id="guide-overlay" class="guide-box">
+        👻 黒枠つきの「オバケのマーカー」を写してね！
       </div>
     </div>
 
-    <div id="clear-message" class="hidden clear-modal-wrapper interactive">
+    <div id="clear-message" class="clear-modal-wrapper interactive">
       <div class="clear-popup">
-        <div class="popup-icon mb-2">🏆✨</div>
-        <h2 class="text-2xl font-black text-[#ff7a00] text-stroke mb-1">HAPPY HALLOWEEN!</h2>
-        <p class="text-[#8a2be2] font-bold text-base mb-4">お菓子を全部あつめたよ！🎉</p>
-        <button onclick="resetGame()" class="btn-retry">
-          もう一回あそぶ！
-        </button>
+        <div class="popup-icon">🏆✨</div>
+        <h2 class="popup-title text-stroke">HAPPY HALLOWEEN!</h2>
+        <p class="popup-desc">お菓子を全部あつめたよ！🎉</p>
+        <button onclick="resetGame()" class="btn-retry">もう一回あそぶ！</button>
       </div>
     </div>
 
     <footer class="footer-banner interactive">
-      <p class="text-white text-base font-bold text-stroke">
-        🍬 あつめたお菓子: <span id="score" class="text-[#ffcc00] text-xl font-black">0</span> / 3 個
+      <p class="footer-text text-stroke">
+        🍬 あつめたお菓子: <span id="score" class="score-number">0</span> / 3 個
       </p>
     </footer>
 
@@ -65,63 +62,15 @@
       url="./assets/pattern-obake.patt"
       id="obake-marker">
 
-      <a-image id="candy1" src="./assets/candy_01.png" position="-0.8 0.1 -0.5" rotation="-90 0 0" scale="0.6 0.6 0.6" class="clickable-candy" onclick="collectCandy('candy1')"></a-image>
-      <a-image id="candy2" src="./assets/candy_02.png" position="0.8 0.1 -0.5" rotation="-90 0 0" scale="0.6 0.6 0.6" class="clickable-candy" onclick="collectCandy('candy2')"></a-image>
-      <a-image id="candy3" src="./assets/candy_03.png" position="0 0.1 -1.2" rotation="-90 0 0" scale="0.8 0.8 0.8" class="clickable-candy" onclick="collectCandy('candy3')"></a-image>
+      <a-sphere id="candy1" color="#ff7a00" position="-0.6 0.2 -0.5" scale="0.25 0.25 0.25" class="interactive" onclick="collectCandy('candy1')"></a-sphere>
+      <a-sphere id="candy2" color="#8a2be2" position="0.6 0.2 -0.5" scale="0.25 0.25 0.25" class="interactive" onclick="collectCandy('candy2')"></a-sphere>
+      <a-sphere id="candy3" color="#ffcc00" position="0 0.2 -1.1" scale="0.3 0.3 0.3" class="interactive" onclick="collectCandy('candy3')"></a-sphere>
 
-    </a-marker>
+      </a-marker>
 
     <a-entity camera cursor="fuse: false; rayOrigin: mouse;"></a-entity>
   </a-scene>
 
-  <script>
-    const scoreText = document.getElementById('score');
-    const clearMessage = document.getElementById('clear-message');
-    const guideOverlay = document.getElementById('guide-overlay');
-    const loadingScreen = document.getElementById('loading');
-    const marker = document.getElementById('obake-marker');
-
-    let score = 0;
-    const maxScore = 3;
-
-    window.addEventListener('camera-init', () => {
-      if (loadingScreen) loadingScreen.classList.add('hidden');
-    });
-
-    marker.addEventListener('markerFound', () => {
-      guideOverlay.style.opacity = '0';
-    });
-
-    marker.addEventListener('markerLost', () => {
-      guideOverlay.style.opacity = '1';
-    });
-
-    function collectCandy(candyId) {
-      const candyElement = document.getElementById(candyId);
-      if (candyElement && candyElement.getAttribute('visible') !== false) {
-        candyElement.setAttribute('visible', 'false');
-        score++;
-        scoreText.innerText = score;
-
-        if (score === maxScore) {
-          clearMessage.classList.remove('hidden');
-          clearMessage.classList.add('flex');
-        }
-      }
-    }
-
-    function resetGame() {
-      score = 0;
-      scoreText.innerText = score;
-      clearMessage.classList.add('hidden');
-      clearMessage.classList.remove('flex');
-      guideOverlay.style.opacity = '1';
-
-      for (let i = 1; i <= maxScore; i++) {
-        const candy = document.getElementById(`candy${i}`);
-        if (candy) candy.setAttribute('visible', 'true');
-      }
-    }
-  </script>
+  <script src="app.js"></script>
 </body>
 </html>
