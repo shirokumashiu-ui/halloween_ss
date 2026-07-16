@@ -104,3 +104,18 @@ body {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-15px); }
 }
+
+/* AR.jsのビデオ表示がデザイン崩れを起こさないようにする設定 */
+a-scene {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;
+}
+
+/* もともと必要だったJSでの手動ビデオ描画は不要になるため、削除または非表示にします */
+#webcam, #canvas {
+  display: none;
+}
