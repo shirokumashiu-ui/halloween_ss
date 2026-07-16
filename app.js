@@ -1,11 +1,7 @@
 // ==========================================
 // 【★デザイン差し替え用：お菓子イラストのパス★】
 // ==========================================
-const CANDY_IMAGES = [
-  './assets/candy_01.png',
-  './assets/candy_02.png',
-  './assets/candy_03.png'
-];
+const CANDY_IMAGE = './assets/candy_01.png';
 
 const scoreText = document.getElementById('score');
 const clearMessage = document.getElementById('clear-message');
@@ -15,7 +11,6 @@ const marker = document.getElementById('obake-marker');
 const candyContainer = document.getElementById('candy-container');
 
 let score = 0;
-const maxScore = 3;
 let candiesSpawned = false; // お菓子が既に出現したかどうかのフラグ
 
 // ARエンジンの起動準備ができたらローディング画面を非表示にする
@@ -29,69 +24,55 @@ window.addEventListener('camera-init', () => {
   }
 });
 
-// 👻 オバケのマーカーをカメラが読み取った瞬間の処理！
+// 👻 Hiroマーカーをカメラが読み取った瞬間の処理！
 marker.addEventListener('markerFound', () => {
   guideOverlay.style.opacity = '0'; // ガイドを隠す
   
-  // まだ画面にお菓子が出ていない場合のみ、お菓子を生成する
+  // まだお菓子が出ていない場合のみ、自動回収シーケンスを開始
   if (!candiesSpawned) {
-    spawnCandies();
+    candiesSpawned = true;
+    spawnAndAutoCollect();
   }
 });
 
 // マーカーを見失った時
 marker.addEventListener('markerLost', () => {
-  // すでにお菓子が出ている場合はそのまま（見失ってもお菓子は画面に残り、タップできます）
   if (!candiesSpawned) {
     guideOverlay.style.opacity = '1';
   }
 });
 
-// 画面にお菓子をポンッ！と出現させる魔法の関数
-function spawnCandies() {
-  candiesSpawned = true;
+// お菓子が自動で出て、自動で吸い込まれて消える演出
+function spawnAndAutoCollect() {
   candyContainer.innerHTML = ''; // コンテナをリセット
 
-  CANDY_IMAGES.forEach((imgSrc, index) => {
-    // 画像タグを作成
-    const candyImg = document.createElement('img');
-    candyImg.src = imgSrc;
-    candyImg.className = 'candy-item';
-    candyImg.id = `candy-${index}`;
-    
-    // 出現タイミングを少しだけズラしてテンポを良くする（ディレイ効果）
-    candyImg.style.animationDelay = `${index * 0.15}s`;
+  // 1. お菓子画像を画面中央に生成
+  const candyImg = document.createElement('img');
+  candyImg.src = CANDY_IMAGE;
+  candyImg.className = 'candy-item';
+  candyContainer.appendChild(candyImg);
 
-    // タップされた時のイベントを登録
-    candyImg.onclick = () => {
-      collectCandy(candyImg);
-    };
-
-    candyContainer.appendChild(candyImg);
-  });
+  // 2. 1.2秒後にお菓子を自動回収（消去）する演出をタイマー予約
+  setTimeout(() => {
+    collectCandyAutomatically(candyImg);
+  }, 1200); // 1.2秒間ふわふわ浮かんだら消える（お好みの時間に変更可能）
 }
 
-// お菓子をタップして「あつめる」処理
-function collectCandy(candyElement) {
-  // お菓子がすでにかき消されている場合はスキップ
-  if (candyElement.style.pointerEvents === 'none') return;
-
-  // タップされたら消える演出（小さくフェードアウト）
-  candyElement.style.pointerEvents = 'none';
-  candyElement.style.transition = 'all 0.3s cubic-bezier(0.6, -0.28, 0.735, 0.045)';
-  candyElement.style.transform = 'scale(0)';
+// 自動でお菓子を消してお祝い画面を出す処理
+function collectCandyAutomatically(candyElement) {
+  // 自動でシュッと吸い込まれるように小さく消えるアニメーション
+  candyElement.style.transition = 'all 0.5s cubic-bezier(0.6, -0.28, 0.735, 0.045)';
+  candyElement.style.transform = 'scale(0) translateY(100px)'; // 下のスコアに向かって吸い込まれる演出
   candyElement.style.opacity = '0';
 
-  // スコア加算
-  score++;
-  scoreText.innerText = score;
+  // 消去アニメーションが終わるタイミングでスコア加算とクリア画面
+  setTimeout(() => {
+    score = 1;
+    scoreText.innerText = score;
 
-  // すべてのお菓子（3個）をあつめたらクリア！
-  if (score === maxScore) {
-    setTimeout(() => {
-      clearMessage.style.display = 'block';
-    }, 400); // すこし余韻を置いてからお祝い
-  }
+    // ゲームクリア（1つあつめたらおしまい）
+    clearMessage.style.display = 'block';
+  }, 500);
 }
 
 // ゲームリセット処理
