@@ -29,24 +29,24 @@
         <h1 class="header-title text-stroke">🎃 FIND THE CANDY! 🍬</h1>
       </header>
       <div id="guide-overlay" class="guide-box">
-        👻 黒枠つきの「オバケのマーカー」を写してね！
+        👻 「HIRO」のマーカーを写してね！
       </div>
     </div>
 
-    <div id="candy-container" class="candy-display-area interactive"></div>
+    <div id="candy-container" class="candy-display-area"></div>
 
     <div id="clear-message" class="clear-modal-wrapper interactive">
       <div class="clear-popup">
         <div class="popup-icon">🏆✨</div>
         <h2 class="popup-title text-stroke">HAPPY HALLOWEEN!</h2>
-        <p class="popup-desc">お菓子を全部あつめたよ！🎉</p>
+        <p class="popup-desc">お菓子をゲットしたよ！🎉</p>
         <button onclick="resetGame()" class="btn-retry">もう一回あそぶ！</button>
       </div>
     </div>
 
-    <footer class="footer-banner interactive">
+    <footer class="footer-banner">
       <p class="footer-text text-stroke">
-        🍬 あつめたお菓子: <span id="score" class="score-number">0</span> / 3 個
+        🍬 あつめたお菓子: <span id="score" class="score-number">0</span> / 1 個
       </p>
     </footer>
 
@@ -58,7 +58,8 @@
     embedded
     arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false;">
 
-   <a-marker preset="hiro" id="obake-marker">
+    <a-marker preset="hiro" id="obake-marker">
+      </a-marker>
 
     <a-entity camera></a-entity>
   </a-scene>
