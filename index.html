@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>👻 ハロウィン ARお菓子あつめゲーム 🎃</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=M+PLUS+Rounded+1c:wght@700;900&display=swap" rel="stylesheet">
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+  <script src="https://docs.opencv.org/4.5.4/opencv.js" defer></script>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="relative w-screen h-screen flex items-center justify-center m-0 p-0 overflow-hidden select-none">
+
+  <video id="webcam" autoplay playsinline></video>
+  <canvas id="canvas"></canvas>
+
+  <div class="absolute inset-0 flex flex-col justify-between items-center p-6 z-20 pointer-events-none">
+    
+    <header class="header-banner transform -rotate-1 mt-4 pointer-events-auto">
+      <h1 class="text-white text-2xl md:text-3xl font-black tracking-wider text-stroke flex items-center gap-2">
+        <span>🎃</span> FIND THE CANDY! <span>🍬</span>
+      </h1>
+    </header>
+
+    <div id="guide-overlay" class="bg-[#1a0f2e]/80 border-2 border-[#ff7a00] text-white p-4 rounded-2xl text-center backdrop-blur-sm transition-opacity duration-500">
+      <p class="font-bold text-sm md:text-base">👻 カメラに「オバケのマーク」を写してね！</p>
+    </div>
+
+    <div id="clear-message" class="hidden flex-col items-center justify-center clear-popup max-w-sm text-center transform scale-90 transition-all duration-500 pointer-events-auto">
+      <div class="popup-icon mb-4">🏆✨</div>
+      <h2 class="text-3xl font-black text-[#ff7a00] text-stroke mb-2">HAPPY HALLOWEEN!</h2>
+      <p class="text-[#8a2be2] font-bold text-lg mb-6">お菓子を全部あつめたよ！🎉</p>
+      <button onclick="resetGame()" class="btn-retry">
+        もう一回あそぶ！
+      </button>
+    </div>
+
+    <footer class="footer-banner mb-4 pointer-events-auto">
+      <p class="text-white text-lg font-bold text-stroke">
+        🍬 あつめたお菓子: <span id="score" class="text-[#ffcc00] text-2xl font-black">0</span> / 3 個
+      </p>
+    </footer>
+
+  </div>
+
+  <div id="loading" class="absolute inset-0 loading-bg z-30 flex flex-col items-center justify-center text-white">
+    <div class="magic-portal mb-4">🔮</div>
+    <p class="text-2xl font-black tracking-widest text-[#ffcc00] text-stroke">HALLOWEEN AR</p>
+    <p class="text-sm text-purple-300 mt-2">魔法のカメラを起動しています...</p>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
