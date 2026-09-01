@@ -2,6 +2,7 @@
 // 【★デザイン差し替え用：お菓子イラストのパス★】
 // ==========================================
 const CANDY_IMAGE = './assets/candy_01.png';
+const TARGET_SCORE = 7; // クリアに必要な回数（7回）
 
 // 画面の全てのHTML要素（DOM）の準備が整ってからゲームのロジックを開始する（エラー防止）
 document.addEventListener('DOMContentLoaded', () => {
@@ -15,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnRetry = document.getElementById('btn-retry');
 
   let score = 0;
-  let candiesSpawned = false; 
+  let isCollecting = false; // 現在お菓子を回収処理中かどうかのフラグ
 
   // リトライボタンにクリックイベントを設定
   if (btnRetry) {
@@ -38,14 +39,16 @@ document.addEventListener('DOMContentLoaded', () => {
     marker.addEventListener('markerFound', () => {
       if (guideOverlay) guideOverlay.style.opacity = '0';
       
-      if (!candiesSpawned) {
-        candiesSpawned = true;
+      // クリア済みでない & 現在回収中でなければお菓子を出現させる
+      if (score < TARGET_SCORE && !isCollecting) {
+        isCollecting = true;
         spawnAndAutoCollect();
       }
     });
 
     marker.addEventListener('markerLost', () => {
-      if (!candiesSpawned && guideOverlay) {
+      // クリアしていない場合は、マーカーを見失ったらガイドを再表示
+      if (score < TARGET_SCORE && guideOverlay) {
         guideOverlay.style.opacity = '1';
       }
     });
@@ -61,31 +64,40 @@ document.addEventListener('DOMContentLoaded', () => {
     candyImg.className = 'candy-item';
     candyContainer.appendChild(candyImg);
 
+    // 1.2秒後にお菓子を自動回収
     setTimeout(() => {
       collectCandyAutomatically(candyImg);
     }, 1200); 
   }
 
-  // 自動でお菓子を消してお祝い画面を出す処理
+  // 自動でお菓子を消して、スコアを加算する処理
   function collectCandyAutomatically(candyElement) {
     candyElement.style.transition = 'all 0.5s cubic-bezier(0.6, -0.28, 0.735, 0.045)';
-    candyElement.style.transform = 'scale(8) translateY(100px)'; 
+    candyElement.style.transform = 'scale(0) translateY(100px)'; 
     candyElement.style.opacity = '0';
 
     setTimeout(() => {
-      score = 8;
+      // スコアを1増やす
+      score++;
       if (scoreText) scoreText.innerText = score;
-      if (clearMessage) clearMessage.style.display = 'block';
+
+      // 7回集めたらゲームクリア！
+      if (score >= TARGET_SCORE) {
+        if (clearMessage) clearMessage.style.display = 'block';
+      } else {
+        // まだ7回に達していない場合、次のマーカー読み取りを受け付けられるようにする
+        isCollecting = false;
+      }
     }, 500);
   }
 
   // ゲームリセット処理
   function resetGame() {
     score = 0;
+    isCollecting = false;
     if (scoreText) scoreText.innerText = score;
     if (clearMessage) clearMessage.style.display = 'none';
-    if (guideOverlay) guideOverlay.style.opacity = '8';
+    if (guideOverlay) guideOverlay.style.opacity = '1';
     if (candyContainer) candyContainer.innerHTML = ''; 
-    candiesSpawned = false; 
   }
 });
