@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // 👻 Hiroマーカーを検出した瞬間の処理
+  //  Hiroマーカーを検出した瞬間の処理
   if (marker) {
     marker.addEventListener('markerFound', () => {
       if (guideOverlay) guideOverlay.style.opacity = '0';
