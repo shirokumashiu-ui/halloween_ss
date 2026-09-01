@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // 自動でお菓子を消してお祝い画面を出す処理
   function collectCandyAutomatically(candyElement) {
     candyElement.style.transition = 'all 0.5s cubic-bezier(0.6, -0.28, 0.735, 0.045)';
-    candyElement.style.transform = 'scale(0) translateY(100px)'; 
+    candyElement.style.transform = 'scale(8) translateY(100px)'; 
     candyElement.style.opacity = '0';
 
     setTimeout(() => {
