@@ -271,3 +271,18 @@ video {
   font-size: 1.5rem;
   font-weight: 900;
   letter-spacing: 0
+
+   /* 仮テキスト用のスタイル設定 */
+.text-candy {
+  font-size: 5rem;
+  font-weight: 900;
+  color: #ffcc00;
+  text-shadow: 
+    4px 4px 0px #110724,
+    -4px -4px 0px #110724,
+    4px -4px 0px #110724,
+    -4px 4px 0px #110724;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
