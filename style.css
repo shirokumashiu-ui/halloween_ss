@@ -4,10 +4,10 @@
    ========================================== */
 
 :root {
-  --color-dark: #110724;
-  --color-purple: #8a2be2;
-  --color-orange: #ff7a00;
-  --color-yellow: #ffcc00;
+  --color-dark: #3a1f0f;
+  --color-purple: #7a2b8f;
+  --color-orange: #ff6b00;
+  --color-yellow: #ffb000;
 }
 
 /* 基本設定：余計なスクロールやスマホの誤作動を防ぐ */
@@ -20,7 +20,7 @@ html, body {
   position: fixed;
   background-color: #110724; /* 変数エラー対策のフォールバック */
   background-color: var(--color-dark);
-  font-family: 'Fredoka One', 'M PLUS Rounded 1c', sans-serif;
+  font-family: 'Fredoka One', 'M PLUS Rounded 1c', Inter;
   touch-action: none;
   -webkit-user-select: none;
   user-select: none;
