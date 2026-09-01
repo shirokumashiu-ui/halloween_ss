@@ -4,7 +4,6 @@
 const CANDY_IMAGE = './assets/candy_01.png';
 const TARGET_SCORE = 7; // クリアに必要な回数（7回）
 
-// 画面の全てのHTML要素（DOM）の準備が整ってからゲームのロジックを開始する（エラー防止）
 document.addEventListener('DOMContentLoaded', () => {
   
   const scoreText = document.getElementById('score');
@@ -16,9 +15,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnRetry = document.getElementById('btn-retry');
 
   let score = 0;
-  let isCollecting = false; // 現在お菓子を回収処理中かどうかのフラグ
+  let isMarkerVisible = false; // マーカーが画面内にあるかどうかのフラグ
+  let hasScoredThisScan = false; // 今回のマーカー表示でカウント済みかどうかのフラグ
 
-  // リトライボタンにクリックイベントを設定
+  // リトライボタンのイベント設定
   if (btnRetry) {
     btnRetry.addEventListener('click', resetGame);
   }
@@ -38,16 +38,21 @@ document.addEventListener('DOMContentLoaded', () => {
   if (marker) {
     marker.addEventListener('markerFound', () => {
       if (guideOverlay) guideOverlay.style.opacity = '0';
+      isMarkerVisible = true;
       
-      // クリア済みでない & 現在回収中でなければお菓子を出現させる
-      if (score < TARGET_SCORE && !isCollecting) {
-        isCollecting = true;
+      // まだクリアしていない & 今回の表示でまだカウントしていない場合のみ実行
+      if (score < TARGET_SCORE && !hasScoredThisScan) {
+        hasScoredThisScan = true; // 1回かざした分のカウント済みフラグを立てる（連打防止）
         spawnAndAutoCollect();
       }
     });
 
+    // 👻 マーカーが画面から消えた瞬間の処理
     marker.addEventListener('markerLost', () => {
-      // クリアしていない場合は、マーカーを見失ったらガイドを再表示
+      isMarkerVisible = false;
+      hasScoredThisScan = false; // マーカーを画面から外したので、次の読み取りを許可する
+
+      // クリアしていない場合はガイドを再表示
       if (score < TARGET_SCORE && guideOverlay) {
         guideOverlay.style.opacity = '1';
       }
@@ -70,23 +75,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 1200); 
   }
 
-  // 自動でお菓子を消して、スコアを加算する処理
+  // 自動でお菓子を消して、スコアを1加算する処理
   function collectCandyAutomatically(candyElement) {
     candyElement.style.transition = 'all 0.5s cubic-bezier(0.6, -0.28, 0.735, 0.045)';
     candyElement.style.transform = 'scale(0) translateY(100px)'; 
     candyElement.style.opacity = '0';
 
     setTimeout(() => {
-      // スコアを1増やす
+      // スコアを1だけ増やす
       score++;
       if (scoreText) scoreText.innerText = score;
 
-      // 7回集めたらゲームクリア！
+      // ちょうど7回に達した時だけクリア画面を出す
       if (score >= TARGET_SCORE) {
         if (clearMessage) clearMessage.style.display = 'block';
-      } else {
-        // まだ7回に達していない場合、次のマーカー読み取りを受け付けられるようにする
-        isCollecting = false;
       }
     }, 500);
   }
@@ -94,7 +96,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // ゲームリセット処理
   function resetGame() {
     score = 0;
-    isCollecting = false;
+    hasScoredThisScan = false;
+    isMarkerVisible = false;
     if (scoreText) scoreText.innerText = score;
     if (clearMessage) clearMessage.style.display = 'none';
     if (guideOverlay) guideOverlay.style.opacity = '1';
