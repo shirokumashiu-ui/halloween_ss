@@ -1,8 +1,25 @@
 // ==========================================
-// 【★デザイン差し替え用：お菓子イラストのパス★】
+// 【★お菓子（または表示テキスト）のデータリスト★】
+// かざした回数（1回目、2回目...）に合わせて順番に表示されます。
+// 画像に差し替える場合は、コメントアウト部分を参考に書き換えてください。
 // ==========================================
-const CANDY_IMAGE = './assets/candy_01.png';
-const TARGET_SCORE = 7; // クリアに必要な回数（7回）
+const CANDY_LIST = [
+  { type: 'text', content: 'あ' }, // 1回目
+  { type: 'text', content: 'い' }, // 2回目
+  { type: 'text', content: 'う' }, // 3回目
+  { type: 'text', content: 'え' }, // 4回目
+  { type: 'text', content: 'お' }, // 5回目
+  { type: 'text', content: 'か' }, // 6回目
+  { type: 'text', content: 'き' }, // 7回目
+  
+  /* // 画像に差し替える場合の書き方例：
+  { type: 'image', content: './assets/candy_01.png' }, // 1回目
+  { type: 'image', content: './assets/candy_02.png' }, // 2回目
+  ...
+  */
+];
+
+const TARGET_SCORE = CANDY_LIST.length; // リストの要素数（7回）で自動判定
 
 document.addEventListener('DOMContentLoaded', () => {
   
@@ -15,8 +32,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnRetry = document.getElementById('btn-retry');
 
   let score = 0;
-  let isMarkerVisible = false; // マーカーが画面内にあるかどうかのフラグ
-  let hasScoredThisScan = false; // 今回のマーカー表示でカウント済みかどうかのフラグ
+  let isMarkerVisible = false; 
+  let hasScoredThisScan = false; // 今回の読み取りでカウント済みかどうかのフラグ
 
   // リトライボタンのイベント設定
   if (btnRetry) {
@@ -42,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
       
       // まだクリアしていない & 今回の表示でまだカウントしていない場合のみ実行
       if (score < TARGET_SCORE && !hasScoredThisScan) {
-        hasScoredThisScan = true; // 1回かざした分のカウント済みフラグを立てる（連打防止）
+        hasScoredThisScan = true; // 連続カウント防止
         spawnAndAutoCollect();
       }
     });
@@ -50,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 👻 マーカーが画面から消えた瞬間の処理
     marker.addEventListener('markerLost', () => {
       isMarkerVisible = false;
-      hasScoredThisScan = false; // マーカーを画面から外したので、次の読み取りを許可する
+      hasScoredThisScan = false; // マーカーを外したので次の読み取りを許可
 
       // クリアしていない場合はガイドを再表示
       if (score < TARGET_SCORE && guideOverlay) {
@@ -59,34 +76,47 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // お菓子が自動で出て、自動で吸い込まれて消える演出
+  // お菓子（またはテキスト）が出現して自動回収される処理
   function spawnAndAutoCollect() {
     if (!candyContainer) return;
     candyContainer.innerHTML = ''; 
 
-    const candyImg = document.createElement('img');
-    candyImg.src = CANDY_IMAGE;
-    candyImg.className = 'candy-item';
-    candyContainer.appendChild(candyImg);
+    // 現在の回数（score）に応じたお菓子データを取得
+    const currentCandy = CANDY_LIST[score];
+    let element;
 
-    // 1.2秒後にお菓子を自動回収
+    if (currentCandy.type === 'image') {
+      // 画像の場合
+      element = document.createElement('img');
+      element.src = currentCandy.content;
+      element.className = 'candy-item';
+    } else {
+      // テキストの場合（「あ」「い」「う」など）
+      element = document.createElement('div');
+      element.innerText = currentCandy.content;
+      element.className = 'candy-item text-candy';
+    }
+
+    candyContainer.appendChild(element);
+
+    // 1.2秒後に自動回収
     setTimeout(() => {
-      collectCandyAutomatically(candyImg);
+      collectCandyAutomatically(element);
     }, 1200); 
   }
 
-  // 自動でお菓子を消して、スコアを1加算する処理
-  function collectCandyAutomatically(candyElement) {
-    candyElement.style.transition = 'all 0.5s cubic-bezier(0.6, -0.28, 0.735, 0.045)';
-    candyElement.style.transform = 'scale(0) translateY(100px)'; 
-    candyElement.style.opacity = '0';
+  // 自動でお菓子（テキスト）を消して、スコアを1加算する処理
+  function collectCandyAutomatically(element) {
+    element.style.transition = 'all 0.5s cubic-bezier(0.6, -0.28, 0.735, 0.045)';
+    element.style.transform = 'scale(0) translateY(100px)'; 
+    element.style.opacity = '0';
 
     setTimeout(() => {
-      // スコアを1だけ増やす
+      // スコアを1増やす
       score++;
       if (scoreText) scoreText.innerText = score;
 
-      // ちょうど7回に達した時だけクリア画面を出す
+      // 目標回数に達したらクリア画面を表示
       if (score >= TARGET_SCORE) {
         if (clearMessage) clearMessage.style.display = 'block';
       }
