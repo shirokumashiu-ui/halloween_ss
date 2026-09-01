@@ -42,27 +42,23 @@
         <div class="popup-icon">🏆✨</div>
         <h2 class="popup-title text-stroke">HAPPY HALLOWEEN!</h2>
         <p class="popup-desc">おばけを みつけたよ！</p>
-        <button id="btn-retry" class="btn-retry">もう一回 あそぶ！</button>
+        <button id="btn-retry" class="btn-retry">もう一回あそぶ！</button>
       </div>
     </div>
 
-    <!-- 下部エリア：スコア ＆ あつめた文字一覧 -->
     <footer class="footer-banner">
       <p class="footer-text text-stroke">
-        みつけたおばけ: <span id="score" class="score-number">0</span> / 7 
+        みつけたおばけ： <span id="score" class="score-number">0</span> / 7 
       </p>
-      <!-- 【追加】集めた文字がここに追加されていきます -->
-      <div id="collected-letters" class="collected-letters-box"></div>
     </footer>
 
   </div>
 
-<!-- 修正後: 解像度を下げる・描画負荷を落とす設定 -->
-<a-scene 
-  embedded 
-  arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono; sourceWidth: 640; sourceHeight: 480; displayWidth: 640; displayHeight: 480;"
-  vr-mode-ui="enabled: false"
-  renderer="antialias: false; precision: medium;">
+  <a-scene
+    vr-mode-ui="enabled: false;"
+    renderer="logarithmicDepthBuffer: true; precision: medium;"
+    embedded
+    arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false;">
 
     <a-marker preset="hiro" id="obake-marker"></a-marker>
     <a-entity camera></a-entity>
