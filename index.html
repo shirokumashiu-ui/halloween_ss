@@ -57,11 +57,12 @@
 
   </div>
 
-  <a-scene
-    vr-mode-ui="enabled: false;"
-    renderer="logarithmicDepthBuffer: true; precision: medium;"
-    embedded
-    arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false;">
+<!-- 修正後: 解像度を下げる・描画負荷を落とす設定 -->
+<a-scene 
+  embedded 
+  arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono; sourceWidth: 640; sourceHeight: 480; displayWidth: 640; displayHeight: 480;"
+  vr-mode-ui="enabled: false"
+  renderer="antialias: false; precision: medium;">
 
     <a-marker preset="hiro" id="obake-marker"></a-marker>
     <a-entity camera></a-entity>
