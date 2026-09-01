@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
     score = 0;
     if (scoreText) scoreText.innerText = score;
     if (clearMessage) clearMessage.style.display = 'none';
-    if (guideOverlay) guideOverlay.style.opacity = '1';
+    if (guideOverlay) guideOverlay.style.opacity = '8';
     if (candyContainer) candyContainer.innerHTML = ''; 
     candiesSpawned = false; 
   }
