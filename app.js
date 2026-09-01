@@ -4,13 +4,13 @@
 // 画像に差し替える場合は、コメントアウト部分を参考に書き換えてください。
 // ==========================================
 const CANDY_LIST = [
-  { type: 'text', content: 'あ' }, // 1回目
-  { type: 'text', content: 'い' }, // 2回目
-  { type: 'text', content: 'う' }, // 3回目
-  { type: 'text', content: 'え' }, // 4回目
-  { type: 'text', content: 'お' }, // 5回目
-  { type: 'text', content: 'か' }, // 6回目
-  { type: 'text', content: 'き' }, // 7回目
+  { type: 'text', content: 'ト' }, // 1回目
+  { type: 'text', content: 'リ' }, // 2回目
+  { type: 'text', content: 'ッ' }, // 3回目
+  { type: 'text', content: 'ク' }, // 4回目
+  { type: 'text', content: 'ハ' }, // 5回目
+  { type: 'text', content: 'ウ' }, // 6回目
+  { type: 'text', content: 'ス' }, // 7回目
   
   /* // 画像に差し替える場合の書き方例：
   { type: 'image', content: './assets/candy_01.png' }, // 1回目
@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // 👻 Hiroマーカーを検出した瞬間の処理
+  //  Hiroマーカーを検出した瞬間の処理
   if (marker) {
     marker.addEventListener('markerFound', () => {
       if (guideOverlay) guideOverlay.style.opacity = '0';
