@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
     candyElement.style.opacity = '0';
 
     setTimeout(() => {
-      score = 1;
+      score = 8;
       if (scoreText) scoreText.innerText = score;
       if (clearMessage) clearMessage.style.display = 'block';
     }, 500);
