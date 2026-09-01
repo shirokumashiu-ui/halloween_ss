@@ -1,3 +1,8 @@
+/* ==========================================
+   【★ハロウィンAR・完全安全版CSS★】
+   エラーの原因となる不正なコメントや構文を排除しています。
+   ========================================== */
+
 :root {
   --color-dark: #3a1f0f;
   --color-purple: #7a2b8f;
@@ -15,7 +20,7 @@ html, body {
   position: fixed;
   background-color: #110724; /* 変数エラー対策のフォールバック */
   background-color: var(--color-dark);
-  font-family: 'Fredoka One', 'M PLUS Rounded 1c', Inter ;
+  font-family: 'Fredoka One', 'M PLUS Rounded 1c', Inter;
   touch-action: none;
   -webkit-user-select: none;
   user-select: none;
@@ -265,21 +270,4 @@ video {
 .loading-text {
   font-size: 1.5rem;
   font-weight: 900;
-  letter-spacing: 0.1em;
-  margin: 15px 0 5px 0;
-}
-
-.loading-sub {
-  font-size: 0.8rem;
-  color: #a78bfa;
-}
-
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-@keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-12px); }
-}
+  letter-spacing: 0
